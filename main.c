@@ -2,26 +2,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Info {
-    char *info;
-} Info;
+typedef struct Item {
+    char *value;
+    struct Item *next;
+} Item;
 
-typedef struct Node {
+
+typedef struct Node{
     char *key;
-
-    struct Node *left;
-    struct Node *right;
-    struct Node *parent_key;
-    struct Node *next_key;
-    Info info;
+    Item *info;
+    struct Node *left;			// left subtree
+    struct Node *right;		// right subtree
+    struct Node *parent;		// parent node
 } Node;
 
 typedef struct Tree {
     Node *head;
 } Tree;
 
+
 void help() {
-    printf("0. Quit\n1. Add\n2. Show\n DON'T WORK--> 3. Delete\n DON'T WORK--> 4. Find versions\n DON'T WORK--> 5. Perehash\n");
+    printf("0. Quit\n1. Add\n2. Show\n3. Individual Circumvent\n DON'T WORK--> 4. Find versions\n DON'T WORK--> 5. Perehash\n");
 }
 
 int check_command() {
@@ -93,19 +94,31 @@ char *in_str() {
     return res;
 }
 
-int mystrcmp(char *str1, char *str2) {
-    int str1_cnt = 0;
-    int str2_cnt = 0;
-    for (int i = 0; i < strlen(str1); i++) {
-        str1_cnt += str1[i];
-    }
-    for (int i = 0; i < strlen(str2); i++) {
-        str2_cnt += str2[i];
-    }
-    if (str1_cnt > str2_cnt) return 1;
-    else if (str1_cnt == str2_cnt) return 0;
-    else return -1;
+Tree* create_tree(){
+    Tree* tree = calloc(1, sizeof (Tree));
+    tree->head = NULL;
+    return tree;
 }
+
+Item* create_item(char *value) {
+    Item *item = calloc(1, sizeof(Item));
+    item->value = strdup(value);
+    item->next = NULL;
+    return item;
+}
+
+Node* create_node(Item *item, char *key) {
+    Node *nd = calloc(1, sizeof(Node));
+    nd->key = strdup(key);
+    nd->info = item;
+    return nd;
+}
+
+//void delete_tree(Tree* tree) {
+//    delete_node_chain(tree->head);
+//    free(tree);
+//}
+
 
 int Tree_Add (Tree *tree) {
     Node *nd = tree->head;
@@ -113,47 +126,143 @@ int Tree_Add (Tree *tree) {
     scanf("%*c");
     char *key = in_str();
     printf("Input info-->");
-    char *info = in_str();
+    char *value = in_str();
+    Node *add = create_node(create_item(value), key);
     if (!(nd)) {
-        nd = realloc(nd, sizeof(Node));
-        nd->key = strdup(key);
-        nd->info.info = strdup(info);
-        printf("%s %s\n", nd->key, nd->info.info);
-        tree->head = nd;
+        tree->head = add;
         return 1;
     } else {
         while (nd) {
-            if (mystrcmp(key, nd->key) == 1) {
+            if (strcmp(add->key, nd->key) > 0) {
+                if (nd->right == NULL) {
+                    nd->right = add;
+                    return 1;
+                }
                 nd = nd->right;
-            } else if (mystrcmp(key, nd->key) == -1) {
+            } else if (strcmp(add->key, nd->key) < 0) {
+                if (nd->left == NULL) {
+                    nd->left = add;
+                    return 1;
+                }
                 nd = nd->left;
+            } else {
+                Item *ptr = nd->info;
+                while (ptr->next) {
+                    ptr = ptr->next;
+                }
+                ptr->next = add->info;
+                return 1;
             }
         }
-        nd = realloc(nd, sizeof(Node));
-        nd->key = strdup(key);
-        nd->info.info = strdup(info);
     }
 }
 
-void postOrderTravers(Node* root) {
-    if (root) {
-        postOrderTravers(root->left);
-        postOrderTravers(root->right);
-        printf("%s ", root->info.info);
-    } else {
-        return;
+
+
+
+void my_print(Node* nd, int height, unsigned int size, int isLeft){
+    if (nd->right != NULL){
+        my_print(nd->right, height + 1, size + strlen(nd->key), 0);
+    }
+
+    if (size == 0){
+        printf("----%s|\n", nd->key);
+    }
+    else {
+
+        if (isLeft == 0) {
+            for (int i = 0; i < size + height * 4; i++) {
+                printf(" ");
+            }
+            printf("___%s|\n", nd->key);
+        } else {
+            for (int i = 0; i < size + height * 4; i++){
+                printf(" ");
+            }
+            printf("~~~%s|\n", nd->key);
+        }
+    }
+
+    if (nd->left != NULL){
+        my_print(nd->left, height + 1, size + strlen(nd->key), 1);
     }
 }
 
 int Tree_Show(Tree *tree) {
-    Node *head = tree->head;
-    postOrderTravers(head);
+    if (tree->head == NULL){
+        printf("Tree is Empty\n");
+        return 1;
+    }
+
+    printf("\nTree: \n\n");
+    my_print(tree->head, 0, 0, 0);
+    return 1;
 }
 
+void circumvent_print(Node* nd, char *substr){
+
+    if (nd->right != NULL){
+        circumvent_print(nd->right, substr);
+    }
+
+    if (strncmp(nd->key, substr, strlen(substr)) == 0) {
+        int len = 0;
+        printf("|%s", nd->info->value);
+        len += strlen(nd->info->value);
+        Item *ptr = nd->info->next;
+        while (ptr) {
+            printf(", %s", ptr->value);
+            len += strlen(ptr->value) + 2;
+            ptr = ptr->next;
+        }
+        for (int i = 0; i < 98 - len - strlen(nd->key); i++) {
+            if (i == (49 - len)) printf("|");
+            else printf(" ");
+        }
+        printf("%s|\n", nd->key);
+    }
+
+    if (nd->left != NULL){
+        circumvent_print(nd->left, substr);
+    }
+}
+
+int Tree_Circumvent(Tree *tree) {
+    if (tree->head == NULL){
+        printf("Tree is Empty\n");
+        return 1;
+    }
+    printf("Input Substing-->");
+    scanf("%*c");
+    char *subString = in_str();
+    printf("\n");
+    int i = 0;
+    while (i < 100) {
+        if (i == 0 || i == 50 || i == 99) {
+            printf("|");
+        } else if (i == (101 / 4)) {
+            printf("val");
+            i += 2;
+        } else if (i == (101 / 4) * 3) {
+            printf("key");
+            i += 2;
+        } else printf(" ");
+        i++;
+    }
+    printf("\n");
+    for (int i = 0; i < 100; i++) {
+        printf("-");
+    }
+    printf("\n");
+    circumvent_print(tree->head, subString);
+    return 1;
+}
+
+
 int main() {
-    Tree *tree = calloc(1, sizeof(Tree));
+    Tree *tree = create_tree();
     int rc;
-    int (*fptr[])(Tree *) = {NULL, Tree_Add, Tree_Show};
+    int (*fptr[])(Tree *) = {NULL, Tree_Add, Tree_Show, Tree_Circumvent};
     while (rc = check_command()) {
         if (!fptr[rc](tree)) break;
     }

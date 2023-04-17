@@ -1,3 +1,4 @@
 C:/Users/vadim/CLionProjects/lab_aisd4a/cmake-build-debug/CMakeFiles/lab_aisd4a.dir
+C:/Users/vadim/CLionProjects/lab_aisd4a/cmake-build-debug/CMakeFiles/test1.dir
 C:/Users/vadim/CLionProjects/lab_aisd4a/cmake-build-debug/CMakeFiles/edit_cache.dir
 C:/Users/vadim/CLionProjects/lab_aisd4a/cmake-build-debug/CMakeFiles/rebuild_cache.dir
