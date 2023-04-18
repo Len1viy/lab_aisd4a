@@ -11,9 +11,9 @@ typedef struct Item {
 typedef struct Node{
     char *key;
     Item *info;
-    struct Node *left;			// left subtree
-    struct Node *right;		// right subtree
-    struct Node *parent;		// parent node
+    struct Node *left;
+    struct Node *right;
+    struct Node *parent;
 } Node;
 
 typedef struct Tree {
@@ -22,7 +22,20 @@ typedef struct Tree {
 
 
 void help() {
-    printf("0. Quit\n1. Add\n2. Show\n3. Individual Circumvent\n DON'T WORK--> 4. Find versions\n DON'T WORK--> 5. Perehash\n");
+    printf("0. Quit\n1. Add\n2. Show\n3. Individual Circumvent\n4. Delete Element by key\n5. Find\n");
+}
+
+int inp_int(int *num) {
+    int n;
+    do {
+        n = scanf("%d", num);
+        if (n < 0) return 0;
+        if (n == 0) {
+            printf("Error input. Try again: \n");
+            scanf("%*s");
+        }
+    } while (n == 0);
+    return 1;
 }
 
 int check_command() {
@@ -114,13 +127,197 @@ Node* create_node(Item *item, char *key) {
     return nd;
 }
 
-//void delete_tree(Tree* tree) {
-//    delete_node_chain(tree->head);
-//    free(tree);
-//}
 
 
-int Tree_Add (Tree *tree) {
+void delete_item(Item* item){
+    free(item->value);
+    free(item);
+}
+
+void delete_item_from_list(Node *nd, int vers) {
+    Item *ptr = nd->info, *prev = NULL;
+    int cnt = 1;
+    while (ptr && cnt != vers) {
+        prev = ptr;
+        ptr = ptr->next;
+        cnt++;
+    }
+    if (!ptr) return;
+    if (ptr == nd->info) nd->info = ptr->next;
+    if (prev) prev->next = ptr->next;
+    delete_item(ptr);
+}
+
+void delete_node_all(Node *nd) {
+    if (nd == NULL) return;
+    if (nd->left != NULL) delete_node_all(nd->left);
+    if (nd->right != NULL) delete_node_all(nd->right);
+    while(nd->info) {
+        delete_item_from_list(nd, 1);
+    }
+    nd->left = NULL;
+    nd->right = NULL;
+    nd->parent = NULL;
+    free(nd->key);
+    free(nd);
+}
+
+void delete_tree(Tree *tree) {
+    delete_node_all(tree->head);
+    free(tree);
+}
+
+int delete_node(Node* nd){
+    Item *ptr = nd->info;
+    int n = 0, cur = 0;
+    if (ptr->next) {
+        printf("Input the number of the element to be removed-->");
+        inp_int(&n);
+        delete_item_from_list(nd, n);
+        return 0;
+    } else {
+        nd->left = NULL;
+        nd->right = NULL;
+        delete_item(nd->info);
+        free(nd->key);
+        free(nd);
+        return 1;
+    }
+
+}
+
+void delete_recur(Node *nd, char *key) {
+    if (strcmp(key, nd->key) == 0){
+        if (nd->info->next) {
+            int n;
+            printf("Input the number of the element to be removed-->");
+            inp_int(&n);
+            delete_item_from_list(nd, n);
+            return;
+        }
+        if (nd->left == NULL && nd->right == NULL){
+            if (nd->parent->left == nd){
+                nd->parent->left = NULL;
+            }
+            if (nd->parent->right == nd){
+                nd->parent->right = NULL;
+            }
+            delete_node(nd);
+            return;
+        }
+        if (nd->left == NULL && nd->right != NULL){
+            if (nd->parent->left == nd){
+                nd->right->parent = nd->parent;
+                nd->parent->left = nd->right;
+
+            }
+            if (nd->parent->right == nd){
+                nd->right->parent = nd->parent;
+                nd->parent->right = nd->right;
+            }
+            delete_node(nd);
+            return;
+        }
+        if (nd->left != NULL && nd->right == NULL){
+            if (nd->parent->left == nd){
+                nd->left->parent = nd->parent;
+                nd->parent->left = nd->left;
+            }
+            if (nd->parent->right == nd){
+                nd->left->parent = nd->parent;
+                nd->parent->right = nd->left;
+            }
+            delete_node(nd);
+            return;
+        }
+        if (nd->left != NULL && nd->right != NULL) {
+            Node *min_node = nd->right, *prevert = nd->right;
+            while (min_node->left != NULL) {
+                prevert = min_node;
+                min_node = min_node->left;
+            }
+            prevert->left = min_node->right;
+            nd->right->parent = min_node;
+            min_node->right = nd->right;
+            nd->left->parent = min_node;
+            min_node->left = nd->left;
+            if (nd->parent->right == nd){
+                min_node->parent = nd->parent;
+                nd->parent->right = min_node;
+            }
+            if (nd->parent->left == nd){
+                min_node->parent = nd->parent;
+                nd->parent->left = min_node;
+            }
+            delete_node(nd);
+
+            return;
+        }
+    }
+    if (strcmp(key, nd->key) < 0){
+        delete_recur(nd->left, key);
+    }
+    if (strcmp(key, nd->key) > 0){
+        delete_recur(nd->right, key);
+    }
+}
+
+int E_Delete(Tree *tree) {
+    if (tree->head == NULL) {
+        printf("Tree is empty");
+        return 1;
+    }
+    printf("Input key, which you want to delete-->");
+    scanf("%*c");
+    char *key = in_str();
+    if (strcmp(tree->head->info->value, key) == 0) {
+        if (tree->head->left == NULL && tree->head->right == NULL) {
+            int f = delete_node(tree->head);
+            printf("DELETED\n");
+            if (f == 1) tree->head = NULL;
+            free(key);
+            return 1;
+        }
+        if (tree->head->left == NULL && tree->head->right != NULL) {
+            Node *temp = tree->head->right;
+            int f = delete_node(tree->head);
+            if (f == 1) tree->head = temp;
+            free(key);
+            return 1;
+        }
+        if (tree->head->left != NULL && tree->head->right == NULL) {
+            Node *temp = tree->head->left;
+            int f = delete_node(tree->head);
+            if (f == 1) tree->head = temp;
+            free(key);
+            return 1;
+        }
+        if (tree->head->left != NULL && tree->head->right != NULL) {
+            Node *min_node = tree->head->right, *prev = tree->head->right;
+
+            while (min_node->left != NULL) {
+                prev = min_node;
+                min_node = min_node->left;
+            }
+
+            prev->left = min_node->right;
+            min_node->right = tree->head->right;
+            min_node->left = tree->head->left;
+            int f = delete_node(tree->head);
+            if (f == 1) tree->head = min_node;
+            free(key);
+            return 1;
+        }
+    } else {
+        delete_recur(tree->head, key);
+        free(key);
+        return 1;
+    }
+}
+
+
+
+int E_Add (Tree *tree) {
     Node *nd = tree->head;
     printf("Input key-->");
     scanf("%*c");
@@ -128,6 +325,8 @@ int Tree_Add (Tree *tree) {
     printf("Input info-->");
     char *value = in_str();
     Node *add = create_node(create_item(value), key);
+    free(key);
+    free(value);
     if (!(nd)) {
         tree->head = add;
         return 1;
@@ -136,12 +335,14 @@ int Tree_Add (Tree *tree) {
             if (strcmp(add->key, nd->key) > 0) {
                 if (nd->right == NULL) {
                     nd->right = add;
+                    nd->right->parent = nd;
                     return 1;
                 }
                 nd = nd->right;
             } else if (strcmp(add->key, nd->key) < 0) {
                 if (nd->left == NULL) {
                     nd->left = add;
+                    nd->left->parent = nd;
                     return 1;
                 }
                 nd = nd->left;
@@ -151,6 +352,9 @@ int Tree_Add (Tree *tree) {
                     ptr = ptr->next;
                 }
                 ptr->next = add->info;
+                free(add->key);
+                free(add);
+
                 return 1;
             }
         }
@@ -198,6 +402,53 @@ int Tree_Show(Tree *tree) {
     my_print(tree->head, 0, 0, 0);
     return 1;
 }
+
+char *find_item(Item *item, int vers) {
+    int cnt = 1;
+    while (item && cnt != vers) {
+        item = item->next;
+        cnt++;
+    }
+    if (!item) return "THAT'S VERSION DOESN'T EXIST";
+    return item->value;
+}
+
+void find_node(Node *nd, char *key, char **res) {
+    if (strcmp(key, nd->key) == 0) {
+        if (nd->info->next) {
+            printf("Input, which version you want to find-->");
+            int v;
+            inp_int(&v);
+            (*res) = find_item(nd->info, v);
+            return;
+        } else (*res) = strdup(nd->info->value);
+    }
+    if (strcmp(key, nd->key) > 0) {
+        if (nd->right == NULL) return;
+        find_node(nd->right, key, res);
+    }
+    if (strcmp(key, nd->key) < 0) {
+        if (nd->left == NULL) return;
+        find_node(nd->left, key, res);
+    }
+}
+
+int E_Find(Tree *tree) {
+    if (tree->head == NULL) {
+        printf("Tree is empty\n");
+        return 1;
+    }
+    printf("Input key, which you want to find-->");
+    scanf("%*c");
+    char *key = in_str();
+    char *result;
+    find_node(tree->head, key, &result);
+    printf("VALUE ---> %s\n", result);
+    free(key);
+    free(result);
+    return 1;
+}
+
 
 void circumvent_print(Node* nd, char *substr){
 
@@ -255,6 +506,7 @@ int Tree_Circumvent(Tree *tree) {
     }
     printf("\n");
     circumvent_print(tree->head, subString);
+    free(subString);
     return 1;
 }
 
@@ -262,9 +514,10 @@ int Tree_Circumvent(Tree *tree) {
 int main() {
     Tree *tree = create_tree();
     int rc;
-    int (*fptr[])(Tree *) = {NULL, Tree_Add, Tree_Show, Tree_Circumvent};
+    int (*fptr[])(Tree *) = {NULL, E_Add, Tree_Show, Tree_Circumvent, E_Delete, E_Find};
     while (rc = check_command()) {
         if (!fptr[rc](tree)) break;
     }
+    delete_tree(tree);
     return 0;
 }
