@@ -55,6 +55,36 @@ build CMakeFiles/lab_aisd4a.dir/main.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Use
   OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
   OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir
 
+build CMakeFiles/lab_aisd4a.dir/lib_tree/tree.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lib_tree/tree.c || cmake_object_order_depends_target_lab_aisd4a
+  DEP_FILE = CMakeFiles\lab_aisd4a.dir\lib_tree\tree.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir\lib_tree
+
+build CMakeFiles/lab_aisd4a.dir/lib_tree/input.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lib_tree/input.c || cmake_object_order_depends_target_lab_aisd4a
+  DEP_FILE = CMakeFiles\lab_aisd4a.dir\lib_tree\input.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir\lib_tree
+
+build CMakeFiles/lab_aisd4a.dir/lib_tree/item.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lib_tree/item.c || cmake_object_order_depends_target_lab_aisd4a
+  DEP_FILE = CMakeFiles\lab_aisd4a.dir\lib_tree\item.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir\lib_tree
+
+build CMakeFiles/lab_aisd4a.dir/lib_tree/node.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lib_tree/node.c || cmake_object_order_depends_target_lab_aisd4a
+  DEP_FILE = CMakeFiles\lab_aisd4a.dir\lib_tree\node.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir\lib_tree
+
+build CMakeFiles/lab_aisd4a.dir/lib_tree/timer.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lib_tree/timer.c || cmake_object_order_depends_target_lab_aisd4a
+  DEP_FILE = CMakeFiles\lab_aisd4a.dir\lib_tree\timer.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab_aisd4a.dir\lib_tree
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target lab_aisd4a
@@ -63,7 +93,7 @@ build CMakeFiles/lab_aisd4a.dir/main.c.obj: C_COMPILER__lab_aisd4a_Debug C$:/Use
 #############################################
 # Link the executable lab_aisd4a.exe
 
-build lab_aisd4a.exe: C_EXECUTABLE_LINKER__lab_aisd4a_Debug CMakeFiles/lab_aisd4a.dir/main.c.obj
+build lab_aisd4a.exe: C_EXECUTABLE_LINKER__lab_aisd4a_Debug CMakeFiles/lab_aisd4a.dir/main.c.obj CMakeFiles/lab_aisd4a.dir/lib_tree/tree.c.obj CMakeFiles/lab_aisd4a.dir/lib_tree/input.c.obj CMakeFiles/lab_aisd4a.dir/lib_tree/item.c.obj CMakeFiles/lab_aisd4a.dir/lib_tree/node.c.obj CMakeFiles/lab_aisd4a.dir/lib_tree/timer.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\lab_aisd4a.dir
@@ -130,6 +160,39 @@ build test1.exe: C_EXECUTABLE_LINKER__test1_Debug CMakeFiles/test1.dir/main1.c.o
   TARGET_IMPLIB = libtest1.dll.a
   TARGET_PDB = test1.exe.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target lab4b
+
+
+#############################################
+# Order-only phony target for lab4b
+
+build cmake_object_order_depends_target_lab4b: phony || CMakeFiles/lab4b.dir
+
+build CMakeFiles/lab4b.dir/lab4b.c.obj: C_COMPILER__lab4b_Debug C$:/Users/vadim/CLionProjects/lab_aisd4a/lab4b.c || cmake_object_order_depends_target_lab4b
+  DEP_FILE = CMakeFiles\lab4b.dir\lab4b.c.obj.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles\lab4b.dir
+  OBJECT_FILE_DIR = CMakeFiles\lab4b.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target lab4b
+
+
+#############################################
+# Link the executable lab4b.exe
+
+build lab4b.exe: C_EXECUTABLE_LINKER__lab4b_Debug CMakeFiles/lab4b.dir/lab4b.c.obj
+  FLAGS = -g
+  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = CMakeFiles\lab4b.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  TARGET_FILE = lab4b.exe
+  TARGET_IMPLIB = liblab4b.dll.a
+  TARGET_PDB = lab4b.exe.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -156,6 +219,8 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
+build lab4b: phony lab4b.exe
+
 build lab_aisd4a: phony lab_aisd4a.exe
 
 build test1: phony test1.exe
@@ -168,7 +233,7 @@ build test1: phony test1.exe
 #############################################
 # Folder: C:/Users/vadim/CLionProjects/lab_aisd4a/cmake-build-debug
 
-build all: phony lab_aisd4a.exe test1.exe
+build all: phony lab_aisd4a.exe test1.exe lab4b.exe
 
 # =============================================================================
 # Built-in targets
